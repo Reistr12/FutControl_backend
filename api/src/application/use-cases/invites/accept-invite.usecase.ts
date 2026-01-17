@@ -1,0 +1,49 @@
+import { OrganizationAccessService } from "@application/services/organization-access.service";
+import { OrganizationRoleService } from "@application/services/organization-role.service";
+import { Invite } from "@domain/entities/invite.entity";
+import type { IInviteRepository } from "@domain/repositories/invite.repository.interface";
+import type { IOrganizationRepository } from "@domain/repositories/organization.repository.interface";
+import { BadRequestException, Injectable, Inject } from "@nestjs/common";
+
+@Injectable()
+export class AcceptInviteUseCase {
+    constructor(
+        @Inject('IInviteRepository')
+        private readonly inviteRepository: IInviteRepository,
+        private readonly organizationAccessService: OrganizationAccessService,
+        @Inject('IOrganizationRepository')
+        private readonly organizationRepository: IOrganizationRepository,
+        private readonly organizationRoleService: OrganizationRoleService,
+    ) {}
+
+async execute(idInvite: string, userId: string, idOrganization: string): Promise<Invite> {
+    const invite = await this.inviteRepository.findById(idInvite);
+    
+    if (!invite || invite.accepted) {
+        throw new BadRequestException('O convite não existe ou já foi aceito');
+    }
+
+    // Verificar se o convite foi enviado PARA este usuário
+    if (invite.userId !== userId) {
+        throw new BadRequestException('Este convite não foi enviado para você');
+    }
+    
+    const acceptedInvite = await this.inviteRepository.acceptInvite(idInvite);
+
+    const member = await this.organizationRepository.createMember({
+        organizationId: acceptedInvite.organizationId,
+        userId: acceptedInvite.userId,
+    });
+
+    const memberRole = await this.organizationRepository.findRoleByName('member');
+    if (memberRole) {
+        await this.organizationRoleService.createOrganizationRole(
+            member.id,
+            acceptedInvite.organizationId,
+            memberRole.roleId
+        );
+    }
+
+    return acceptedInvite;
+}
+}

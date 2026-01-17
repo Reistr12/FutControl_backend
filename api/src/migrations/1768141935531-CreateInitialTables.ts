@@ -126,8 +126,8 @@ export class CreateInitialTables1768141935531 implements MigrationInterface {
     }
 
     public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`DROP TABLE IF EXISTS "organization_members"`);
         await queryRunner.query(`DROP TABLE IF EXISTS "organization_roles"`);
+        await queryRunner.query(`DROP TABLE IF EXISTS "organization_members"`);
         await queryRunner.query(`DROP TABLE IF EXISTS "organizations"`);
         await queryRunner.query(`DROP TABLE IF EXISTS "roles"`);
         await queryRunner.query(`DROP TABLE IF EXISTS "users"`);

@@ -1,13 +1,13 @@
 import { Injectable, Inject, UnauthorizedException, BadRequestException } from '@nestjs/common';
-import type { IOrganizationRoleRepository } from '../../../domain/repositories/organization.repository.interface';
+import type { IOrganizationRepository } from '../../../domain/repositories/organization.repository.interface';
 import { OrganizationRole } from '../../../domain/entities/organization-role.entity';
 import { OrganizationAccessService } from '../../services/organization-access.service';
 
 @Injectable()
 export class GetOrganizationRolesUseCase {
   constructor(
-    @Inject('IOrganizationRoleRepository')
-    private readonly organizationRoleRepository: IOrganizationRoleRepository,
+    @Inject('IOrganizationRepository')
+    private readonly organizationRepository: IOrganizationRepository,
     private readonly organizationAccessService: OrganizationAccessService,
   ) {}
 
@@ -23,7 +23,7 @@ export class GetOrganizationRolesUseCase {
 
     // Verifica se o usuário é membro da organização
     await this.organizationAccessService.verifyUserIsMember(userId, organizationId);
-    return this.organizationRoleRepository.findByOrganizationId(organizationId);
+    return this.organizationRepository.findRolesByOrganizationId(organizationId);
   }
 }
 

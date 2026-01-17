@@ -15,21 +15,24 @@ export class ListOrganizationsUseCase {
         search?: string;
         userId: string;
         isPublic?: boolean;
-    }): Promise<Organization[] | null> {
+    }): Promise<any[] | null> {
         const { search, userId, isPublic } = params;
 
         if(!userId) {
             throw new UnauthorizedException('Usuário não encontrado');
         }
-        
+
         let allOrganizations = await this.organizationRepository.listOrganizations(isPublic);
 
-        let organizationsWithUser: Organization[] = [];
+        let organizationsWithUser: any[] = [];
         if (!isPublic) {
             await Promise.all(allOrganizations.map(async organization => {
-                const isMember = await this.organizationAccessService.verifyUserIsMember(userId, organization.id);
-                if (isMember) {
-                    organizationsWithUser.push(organization);
+                const member = await this.organizationAccessService.verifyUserIsMember(userId, organization.id);
+                if (member) {
+                    organizationsWithUser.push({
+                        ...organization,
+                        organizationRole: member.organizationRole,
+                    });
                 }
             }));
 

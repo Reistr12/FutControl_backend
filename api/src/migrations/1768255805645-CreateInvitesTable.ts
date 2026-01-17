@@ -9,6 +9,7 @@ export class CreateInvitesTable1768255805645 implements MigrationInterface {
                 "organizationId" uuid NOT NULL,
                 "userId" uuid NOT NULL,
                 "email" varchar(255) NOT NULL,
+                "response" boolean DEFAULT NULL,
                 "createdAt" TIMESTAMP NOT NULL DEFAULT now(),
                 "updatedAt" TIMESTAMP NOT NULL DEFAULT now(),
                 "deletedAt" TIMESTAMP,

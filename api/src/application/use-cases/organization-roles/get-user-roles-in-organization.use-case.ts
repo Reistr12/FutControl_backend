@@ -1,13 +1,13 @@
 import { Injectable, Inject, UnauthorizedException, BadRequestException } from '@nestjs/common';
-import type { IOrganizationRoleRepository } from '../../../domain/repositories/organization.repository.interface';
+import type { IOrganizationRepository } from '../../../domain/repositories/organization.repository.interface';
 import { OrganizationRole } from '../../../domain/entities/organization-role.entity';
 import { OrganizationAccessService } from '../../services/organization-access.service';
 
 @Injectable()
 export class GetUserRolesInOrganizationUseCase {
   constructor(
-    @Inject('IOrganizationRoleRepository')
-    private readonly organizationRoleRepository: IOrganizationRoleRepository,
+    @Inject('IOrganizationRepository')
+    private readonly organizationRepository: IOrganizationRepository,
     private readonly organizationAccessService: OrganizationAccessService,
   ) {}
 
@@ -29,7 +29,7 @@ export class GetUserRolesInOrganizationUseCase {
     await this.organizationAccessService.verifyUserIsMember(currentUserId, organizationId);
 
     // Busca as roles do usuário especificado na organização
-    const userRoles = await this.organizationRoleRepository.findByUserIdAndOrganizationId(
+    const userRoles = await this.organizationRepository.findRolesByUserIdAndOrganizationId(
       userId,
       organizationId,
     );

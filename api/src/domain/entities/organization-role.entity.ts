@@ -6,7 +6,10 @@ import {
   UpdateDateColumn,
   DeleteDateColumn,
   Unique,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+import { Role } from './role.entity';
 
 @Entity('organization_roles')
 @Unique(['memberId', 'roleId', 'organizationId'])
@@ -19,6 +22,10 @@ export class OrganizationRole {
 
   @Column({ name: 'roleId' })
   roleId: string;
+
+  @ManyToOne(() => Role)
+  @JoinColumn({ name: 'roleId' })
+  role: Role;
 
   @Column({ name: 'organizationId' })
   organizationId: string;

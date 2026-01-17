@@ -18,11 +18,8 @@ import { UpdateOrganizationUseCase } from '@application/use-cases/organizations/
 import { DeleteOrganizationUseCase } from '@application/use-cases/organizations/delete-organization.use-case';
 import { CreateOrganizationDto } from '@application/dtos/create-organization.dto';
 import { UpdateOrganizationDto } from '@application/dtos/update-organization.dto';
-import { CreateOrganizationRoleUseCase } from '@application/use-cases/organization-roles/create-organization-role.use-case';
 import { GetOrganizationRolesUseCase } from '@application/use-cases/organization-roles/get-organization-roles.use-case';
-import { DeleteOrganizationRoleUseCase } from '@application/use-cases/organization-roles/delete-organization-role.use-case';
 import { GetUserRolesInOrganizationUseCase } from '@application/use-cases/organization-roles/get-user-roles-in-organization.use-case';
-import { CreateOrganizationRoleDto } from '@application/dtos/create-organization-role.dto';
 import { CreateOrganizationMemberUseCase } from '@application/use-cases/organization-members/create-organization-member.use-case';
 import { GetOrganizationMembersUseCase } from '@application/use-cases/organization-members/get-organization-members.use-case';
 import { DeleteOrganizationMemberUseCase } from '@application/use-cases/organization-members/delete-organization-member.use-case';
@@ -41,9 +38,7 @@ export class OrganizationController {
     private readonly getOrganizationUseCase: GetOrganizationUseCase,
     private readonly updateOrganizationUseCase: UpdateOrganizationUseCase,
     private readonly deleteOrganizationUseCase: DeleteOrganizationUseCase,
-    private readonly createOrganizationRoleUseCase: CreateOrganizationRoleUseCase,
     private readonly getOrganizationRolesUseCase: GetOrganizationRolesUseCase,
-    private readonly deleteOrganizationRoleUseCase: DeleteOrganizationRoleUseCase,
     private readonly getUserRolesInOrganizationUseCase: GetUserRolesInOrganizationUseCase,
     private readonly createOrganizationMemberUseCase: CreateOrganizationMemberUseCase,
     private readonly getOrganizationMembersUseCase: GetOrganizationMembersUseCase,
@@ -116,40 +111,14 @@ export class OrganizationController {
     return this.getUserRolesInOrganizationUseCase.execute(userId, organizationId, user.id);
   }
 
-  @Post(':organizationId/roles')
-  @HttpCode(HttpStatus.CREATED)
-  async createOrganizationRole(
-    @Param('organizationId') organizationId: string,
-    @Body() createDto: CreateOrganizationRoleDto,
-    @CurrentUser() user: CurrentUserData,
-  ) {
-    return this.createOrganizationRoleUseCase.execute(
-      {
-        ...createDto,
-        organizationId,
-      },
-      user.id,
-    );
-  }
-
-  @Delete(':organizationId/roles/:userId/:roleId')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  async deleteOrganizationRole(
-    @Param('organizationId') organizationId: string,
-    @Param('userId') userId: string,
-    @Param('roleId') roleId: string,
-    @CurrentUser() user: CurrentUserData,
-  ) {
-    await this.deleteOrganizationRoleUseCase.execute(userId, roleId, organizationId, user.id);
-  }
-
   // Organization Members
   @Get(':organizationId/members')
   async getOrganizationMembers(
     @Param('organizationId') organizationId: string,
+    @Query('search') search: string,
     @CurrentUser() user: CurrentUserData,
   ): Promise<OrganizationMember[]> {
-    return this.getOrganizationMembersUseCase.execute(organizationId, user.id);
+    return this.getOrganizationMembersUseCase.execute(organizationId, user.id, { search });
   }
 
   @Post(':organizationId/members')

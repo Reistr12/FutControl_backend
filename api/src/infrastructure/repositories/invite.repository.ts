@@ -1,49 +1,64 @@
 import { Invite } from "@domain/entities/invite.entity";
 import { OrganizationMember } from "@domain/entities/organization-member.entity";
 import { OrganizationRole } from "@domain/entities/organization-role.entity";
-import { IIvinteRepository } from "@domain/repositories/invite.repository.interface";
+import { IInviteRepository } from "@domain/repositories/invite.repository.interface";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { randomUUID } from "crypto";
-import { Repository, Transaction } from "typeorm";
+import { In, Repository, Transaction } from "typeorm";
 
 @Injectable()
-export class InviteRepository implements IIvinteRepository {
+export class InviteRepository implements IInviteRepository {
     constructor(
         @InjectRepository(Invite)
         private readonly typeOrmRepository: Repository<Invite>,
+        @InjectRepository(OrganizationMember)
         private readonly organizationMemberRepository: Repository<OrganizationMember>,
+        @InjectRepository(OrganizationRole)
         private readonly organizationRoleRepository: Repository<OrganizationRole>,
     ) {}
-
+    
+    async findById(id: string): Promise<Invite | null> {
+        return this.typeOrmRepository.findOneBy({ id });
+    }
+    
     async findByOrganizationId(organizationId: string): Promise<Invite[]> {
         return this.typeOrmRepository.find({
-            where: { organizationId },
-            relations: ['organization', 'user'],
+            where: { 
+                organizationId,
+                deletedAt: null as any
+            },
         });
     }
 
-    async responseToInvite(invite: Invite, accept: boolean): Promise<void> {
-        if (accept) {
-            const newMember = new OrganizationMember() 
-            newMember.id = randomUUID()
-            newMember.userId = invite.userId;
-            newMember.organizationId = invite.organizationId;
-            await this.organizationMemberRepository.save(newMember);
-
-            const organizationRole = new OrganizationRole()
-            organizationRole.id = randomUUID()
-            organizationRole.organizationId = invite.organizationId;
-            organizationRole.memberId = newMember.id;
-            organizationRole.roleId = 'b2c3d4e5-f6a7-4890-b123-456789abcdef';
-            await this.organizationRoleRepository.manager.save(organizationRole);
-        } else {
-            await this.typeOrmRepository.softDelete(invite);
-        }
+    async findByUserId(userId: string): Promise<Invite[]> {
+        return this.typeOrmRepository.find({
+            where: { 
+                userId,
+                deletedAt: null as any
+            },
+            relations: ['organization'],
+        });
     }
 
-    async create(invite: Partial<Invite>): Promise<Invite> {
-        const newInvite = this.typeOrmRepository.create(invite);
+    async acceptInvite(idInvite:string): Promise<Invite> {
+        const invite =  await this.typeOrmRepository.findOneBy({ id: idInvite });
+        if (!invite) {
+            throw new Error('Invite not found');
+        }
+        invite.accepted = true;
+        invite.deletedAt = new Date();
+        await this.typeOrmRepository.save(invite)
+        
+        return invite;
+    }
+
+    async create(organizationId: string, userId: string, email: string, invitedBy: string): Promise<Invite> {
+        const newInvite = new Invite();
+        newInvite.organizationId = organizationId;
+        newInvite.userId = userId;
+        newInvite.email = email;
+        newInvite.invitedBy = invitedBy;
         return this.typeOrmRepository.save(newInvite);
     }
 

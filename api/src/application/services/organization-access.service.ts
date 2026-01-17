@@ -1,18 +1,23 @@
 import { Injectable, Inject, ForbiddenException, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import type { IOrganizationMemberRepository, IOrganizationRepository, IOrganizationRoleRepository } from '../../domain/repositories/organization.repository.interface';
+import type { IOrganizationRepository } from '../../domain/repositories/organization.repository.interface';
+import { OrganizationMember } from '@domain/entities/organization-member.entity';
+import { Repository } from 'typeorm';
+import { Role } from '@domain/entities/role.entity';
+import { OrganizationRole } from '@domain/entities/organization-role.entity';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class OrganizationAccessService {
   constructor(
     @Inject('IOrganizationRepository')
     private readonly organizationRepository: IOrganizationRepository,
-    @Inject('IOrganizationMemberRepository')
-    private readonly organizationMemberRepository: IOrganizationMemberRepository,
-    @Inject('IOrganizationRoleRepository')
-    private readonly organizationRoleRepository: IOrganizationRoleRepository,
+    @InjectRepository(Role)
+    private readonly roleRepository: Repository<Role>,
+    @InjectRepository(OrganizationRole)
+    private readonly organizationRoleRepository: Repository<OrganizationRole>,
   ) {}
 
-  async verifyUserIsMember(userId: string, organizationId: string): Promise<boolean> {
+  async verifyUserIsMember(userId: string, organizationId: string): Promise<OrganizationMember | false> {
     if (!userId) {
       throw new UnauthorizedException('Usuário não autenticado');
     }
@@ -22,7 +27,7 @@ export class OrganizationAccessService {
       throw new NotFoundException('Organização não encontrada');
     }
 
-    const member = await this.organizationMemberRepository.findByUserIdAndOrganizationId(
+    const member = await this.organizationRepository.findMemberByUserIdAndOrganizationId(
       userId,
       organizationId,
     );
@@ -31,7 +36,7 @@ export class OrganizationAccessService {
       return false
     }
 
-    return true;
+    return member;
   }
 
   async verifyUserHasRole(userId: string, organizationId: string, roleName: string): Promise<boolean> {
@@ -45,17 +50,21 @@ export class OrganizationAccessService {
       return false;
     }
 
-    const role = await this.roleRepository.findByName(roleName);
+    const role = await this.roleRepository.findOneBy({ name: roleName });
+
     if (!role) {
-      return false;
+      throw new NotFoundException(`Função '${roleName}' não encontrada`);
     }
 
-    const userRoles = await this.organizationRoleRepository.findByUserIdAndOrganizationId(
-      userId,
-      organizationId,
-    );
+    const organizationRole = await this.organizationRoleRepository.findOne({
+      where: {
+        memberId: isMember.id,
+        roleId: role.id,
+        organizationId,
+      },
+    });
 
-    const hasRole = userRoles.some((orgRole) => orgRole.roleId === role.id);
+    const hasRole = !!organizationRole;
 
     return hasRole;
   }

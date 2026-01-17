@@ -7,6 +7,7 @@ import { UserModule } from './modules/user.module';
 import { DatabaseConfig } from './infrastructure/database/database.config';
 import { JwtAuthGuard } from './infrastructure/guards/jwt-auth.guard';
 import { OrganizationModule } from './modules/organization.module';
+import { InviteModule } from './modules/invite.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { OrganizationModule } from './modules/organization.module';
     AuthModule,
     UserModule,
     OrganizationModule,
+    InviteModule,
   ],
   providers: [
     {

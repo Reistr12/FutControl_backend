@@ -6,6 +6,7 @@ import { Role } from '../../domain/entities/role.entity';
 import { Organization } from '../../domain/entities/organization.entity';
 import { OrganizationRole } from '../../domain/entities/organization-role.entity';
 import { OrganizationMember } from '../../domain/entities/organization-member.entity';
+import { Invite } from '../../domain/entities/invite.entity';
 
 @Injectable()
 export class DatabaseConfig implements TypeOrmOptionsFactory {
@@ -25,6 +26,7 @@ export class DatabaseConfig implements TypeOrmOptionsFactory {
         Organization,
         OrganizationRole,
         OrganizationMember,
+        Invite,
       ],
       synchronize: this.configService.get<string>('NODE_ENV') === 'development',
       logging: this.configService.get<string>('NODE_ENV') === 'development',
