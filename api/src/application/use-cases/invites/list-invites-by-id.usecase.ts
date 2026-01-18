@@ -25,6 +25,7 @@ export class ListInvitesByIdUseCase {
         if (!isAdmin) {
             throw new BadRequestException('Usuário não tem permissão para listar os convites desta organização');
         }
+
         const invites: Invite[] = await this.inviteRepository.findByOrganizationId(organizationId);
 
         return invites || [];

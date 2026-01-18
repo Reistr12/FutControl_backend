@@ -33,6 +33,7 @@ export class CreateOrganizationMemberUseCase {
     if (!organization) {
       throw new NotFoundException('Organização não encontrada');
     }
+
     if (!user) {
       throw new NotFoundException('Usuário não encontrado');
     }
@@ -58,7 +59,7 @@ export class CreateOrganizationMemberUseCase {
           role.id,
         );
       }
-    }
+    } 
     
     return member;
   }

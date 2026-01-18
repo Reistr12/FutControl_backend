@@ -28,8 +28,8 @@ export class InviteController {
     }
 
     @Post(':idOrganization/:idInvite/accept')
-    async acceptInvite(@Param('idInvite') idInvite: string, @Param('idOrganization') idOrganization: string, @CurrentUser() user) {
-        return await this.acceptInviteUseCase.execute(idInvite, user.id, idOrganization);
+    async acceptInvite(@Param('idInvite') idInvite: string, @CurrentUser() user) {
+        return await this.acceptInviteUseCase.execute(idInvite, user.id);
     }
 
     @Get('user/my-invites')

@@ -16,19 +16,22 @@ export class AcceptInviteUseCase {
         private readonly organizationRoleService: OrganizationRoleService,
     ) {}
 
-async execute(idInvite: string, userId: string, idOrganization: string): Promise<Invite> {
+async execute(idInvite: string, userId: string): Promise<Invite> {
     const invite = await this.inviteRepository.findById(idInvite);
     
     if (!invite || invite.accepted) {
         throw new BadRequestException('O convite não existe ou já foi aceito');
     }
 
-    // Verificar se o convite foi enviado PARA este usuário
     if (invite.userId !== userId) {
         throw new BadRequestException('Este convite não foi enviado para você');
     }
     
     const acceptedInvite = await this.inviteRepository.acceptInvite(idInvite);
+
+    if (acceptedInvite === null) {
+        throw new BadRequestException('Erro ao aceitar o convite');
+    }
 
     const member = await this.organizationRepository.createMember({
         organizationId: acceptedInvite.organizationId,

@@ -12,10 +12,6 @@ export class InviteRepository implements IInviteRepository {
     constructor(
         @InjectRepository(Invite)
         private readonly typeOrmRepository: Repository<Invite>,
-        @InjectRepository(OrganizationMember)
-        private readonly organizationMemberRepository: Repository<OrganizationMember>,
-        @InjectRepository(OrganizationRole)
-        private readonly organizationRoleRepository: Repository<OrganizationRole>,
     ) {}
     
     async findById(id: string): Promise<Invite | null> {
@@ -41,10 +37,10 @@ export class InviteRepository implements IInviteRepository {
         });
     }
 
-    async acceptInvite(idInvite:string): Promise<Invite> {
+    async acceptInvite(idInvite:string): Promise<Invite | null> {
         const invite =  await this.typeOrmRepository.findOneBy({ id: idInvite });
         if (!invite) {
-            throw new Error('Invite not found');
+            return null;
         }
         invite.accepted = true;
         invite.deletedAt = new Date();
@@ -60,10 +56,6 @@ export class InviteRepository implements IInviteRepository {
         newInvite.email = email;
         newInvite.invitedBy = invitedBy;
         return this.typeOrmRepository.save(newInvite);
-    }
-
-    async save(invite: Invite): Promise<Invite> {
-        return this.typeOrmRepository.save(invite);
     }
 
     async delete(id: string): Promise<void> {

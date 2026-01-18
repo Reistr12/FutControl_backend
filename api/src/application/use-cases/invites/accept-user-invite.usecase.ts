@@ -27,6 +27,10 @@ export class AcceptUserInviteUseCase {
         
         const acceptedInvite = await this.inviteRepository.acceptInvite(inviteId);
 
+        if (acceptedInvite === null) {
+            throw new BadRequestException('Erro ao aceitar o convite');
+        }
+
         const member = await this.organizationRepository.createMember({
             organizationId: acceptedInvite.organizationId,
             userId: acceptedInvite.userId,

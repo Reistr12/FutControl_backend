@@ -15,7 +15,7 @@ export class ListOrganizationsUseCase {
         search?: string;
         userId: string;
         isPublic?: boolean;
-    }): Promise<any[] | null> {
+    }): Promise<Organization[] | null> {
         const { search, userId, isPublic } = params;
 
         if(!userId) {
