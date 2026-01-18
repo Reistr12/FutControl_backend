@@ -214,6 +214,3 @@ backend/
 - Validação de dados de entrada usando class-validator
 - Proteção contra SQL injection através do TypeORM
 
-## 📄 Licença
-
-Este projeto é privado e não possui licença pública.
