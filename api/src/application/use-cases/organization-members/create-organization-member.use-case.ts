@@ -1,7 +1,7 @@
 import { Injectable, Inject, ConflictException, NotFoundException } from '@nestjs/common';
 import type { IOrganizationRepository } from '../../../domain/repositories/organization.repository.interface';
 import type { IUserRepository } from '../../../domain/repositories/user.repository.interface';
-import { CreateOrganizationMemberDto } from '../../dtos/create-organization-member.dto';
+import { CreateOrganizationMemberDto, MemberRoleEnum } from '../../dtos/create-organization-member.dto';
 import { OrganizationMember } from '../../../domain/entities/organization-member.entity';
 import { OrganizationAccessService } from '../../services/organization-access.service';
 import { OrganizationRoleService } from '@application/services/organization-role.service';
@@ -23,7 +23,7 @@ export class CreateOrganizationMemberUseCase {
   ) {}
 
   async execute(createDto: CreateOrganizationMemberDto, userId: string): Promise<OrganizationMember> {
-    await this.organizationAccessService.verifyUserHasRole(userId, createDto.organizationId, 'admin');
+    await this.organizationAccessService.verifyUserHasRole(userId, createDto.organizationId, MemberRoleEnum.ADMIN);
 
     const [organization, user] = await Promise.all([
       this.organizationRepository.findById(createDto.organizationId),

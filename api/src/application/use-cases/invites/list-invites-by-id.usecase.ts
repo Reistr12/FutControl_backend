@@ -1,3 +1,4 @@
+import { MemberRoleEnum } from "@application/dtos/create-organization-member.dto";
 import { OrganizationAccessService } from "@application/services/organization-access.service";
 import { Invite } from "@domain/entities/invite.entity";
 import type { IInviteRepository } from "@domain/repositories/invite.repository.interface";
@@ -20,7 +21,7 @@ export class ListInvitesByIdUseCase {
             throw new BadRequestException('Organização não encontrada');
         }
 
-        const isAdmin = await this.organizationAccessService.verifyUserHasRole(userId, organization.id, 'admin');
+        const isAdmin = await this.organizationAccessService.verifyUserHasRole(userId, organization.id, MemberRoleEnum.ADMIN);
 
         if (!isAdmin) {
             throw new BadRequestException('Usuário não tem permissão para listar os convites desta organização');

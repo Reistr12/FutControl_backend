@@ -12,7 +12,6 @@ export class GetOrganizationRolesUseCase {
   ) {}
 
   async execute(organizationId: string, userId: string): Promise<OrganizationRole[]> {
-    // Validação de parâmetros
     if (!userId) {
       throw new UnauthorizedException('Usuário não autenticado');
     }
@@ -21,7 +20,6 @@ export class GetOrganizationRolesUseCase {
       throw new BadRequestException('ID da organização é obrigatório');
     }
 
-    // Verifica se o usuário é membro da organização
     await this.organizationAccessService.verifyUserIsMember(userId, organizationId);
     return this.organizationRepository.findRolesByOrganizationId(organizationId);
   }

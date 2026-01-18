@@ -4,6 +4,7 @@ import { OrganizationAccessService } from '../../services/organization-access.se
 import { Repository } from 'typeorm';
 import { OrganizationRole } from '@domain/entities/organization-role.entity';
 import { OrganizationMember } from '@domain/entities/organization-member.entity';
+import { MemberRoleEnum } from '@application/dtos/create-organization-member.dto';
 
 @Injectable()
 export class DeleteOrganizationUseCase {
@@ -22,7 +23,7 @@ export class DeleteOrganizationUseCase {
       throw new NotFoundException('Organização não encontrada');
     }
     
-    const isMemberAdmin = await this.organizationAccessService.verifyUserHasRole(userId, id, 'admin');
+    const isMemberAdmin = await this.organizationAccessService.verifyUserHasRole(userId, id, MemberRoleEnum.ADMIN);
     if (!isMemberAdmin) {
       throw new ForbiddenException('Usuário não tem permissão para deletar esta organização');
     }

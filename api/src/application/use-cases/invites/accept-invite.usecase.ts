@@ -1,3 +1,4 @@
+import { MemberRoleEnum } from "@application/dtos/create-organization-member.dto";
 import { OrganizationAccessService } from "@application/services/organization-access.service";
 import { OrganizationRoleService } from "@application/services/organization-role.service";
 import { Invite } from "@domain/entities/invite.entity";
@@ -38,7 +39,7 @@ async execute(idInvite: string, userId: string): Promise<Invite> {
         userId: acceptedInvite.userId,
     });
 
-    const memberRole = await this.organizationRepository.findRoleByName('member');
+    const memberRole = await this.organizationRepository.findRoleByName(MemberRoleEnum.MEMBER);
     if (memberRole) {
         await this.organizationRoleService.createOrganizationRole(
             member.id,
