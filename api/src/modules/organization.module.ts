@@ -20,6 +20,7 @@ import { GetOrganizationMembersUseCase } from '@application/use-cases/organizati
 import { DeleteOrganizationMemberUseCase } from '@application/use-cases/organization-members/delete-organization-member.use-case';
 import { OrganizationAccessService } from '@application/services/organization-access.service';
 import { OrganizationRoleService } from '@application/services/organization-role.service';
+import { Repository } from 'typeorm';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { OrganizationRoleService } from '@application/services/organization-role
     GetOrganizationMembersUseCase,
     DeleteOrganizationMemberUseCase,
     OrganizationAccessService,
+    Repository,
   ],
 })
 export class OrganizationModule {}

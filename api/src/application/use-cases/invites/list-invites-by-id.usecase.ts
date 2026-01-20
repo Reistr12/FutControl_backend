@@ -1,4 +1,4 @@
-import { MemberRoleEnum } from "@application/dtos/create-organization-member.dto";
+import { MemberRoleEnum } from "@domain/enums/member-role.enum";
 import { OrganizationAccessService } from "@application/services/organization-access.service";
 import { Invite } from "@domain/entities/invite.entity";
 import type { IInviteRepository } from "@domain/repositories/invite.repository.interface";

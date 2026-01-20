@@ -4,7 +4,7 @@ import { CreateOrganizationDto } from '../../dtos/create-organization.dto';
 import { Organization } from '../../../domain/entities/organization.entity';
 import { CurrentUserData } from '@infrastructure/decorators/current-user.decorator';
 import { CreateOrganizationMemberUseCase } from '../organization-members/create-organization-member.use-case';  
-import { MemberRoleEnum } from '@application/dtos/create-organization-member.dto';
+import { MemberRoleEnum } from '@domain/enums/member-role.enum';
 
 @Injectable()
 export class CreateOrganizationUseCase {

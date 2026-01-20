@@ -9,6 +9,14 @@ export class UpdateOrganizationDto {
   @IsOptional()
   description?: string;
 
+  @IsString()
+  @IsOptional()
+  location?: string;
+
+  @IsBoolean()
+  @IsOptional()
+  isPublic?: boolean;
+
   @IsBoolean()
   @IsOptional()
   isActive?: boolean;
@@ -19,4 +27,3 @@ export class UpdateOrganizationDto {
   @IsOptional()
   maxMembers?: number;
 }
-

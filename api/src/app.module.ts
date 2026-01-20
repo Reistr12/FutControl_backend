@@ -8,6 +8,7 @@ import { DatabaseConfig } from './infrastructure/database/database.config';
 import { JwtAuthGuard } from './infrastructure/guards/jwt-auth.guard';
 import { OrganizationModule } from './modules/organization.module';
 import { InviteModule } from './modules/invite.module';
+import { MatchModule } from './modules/match.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { InviteModule } from './modules/invite.module';
     UserModule,
     OrganizationModule,
     InviteModule,
+    MatchModule,
   ],
   providers: [
     {

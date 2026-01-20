@@ -7,6 +7,8 @@ import { Organization } from '../../domain/entities/organization.entity';
 import { OrganizationRole } from '../../domain/entities/organization-role.entity';
 import { OrganizationMember } from '../../domain/entities/organization-member.entity';
 import { Invite } from '../../domain/entities/invite.entity';
+import { Match } from '../../domain/entities/match.entity';
+import { MatchPlayer } from '../../domain/entities/match-player.entity';
 
 @Injectable()
 export class DatabaseConfig implements TypeOrmOptionsFactory {
@@ -27,10 +29,11 @@ export class DatabaseConfig implements TypeOrmOptionsFactory {
         OrganizationRole,
         OrganizationMember,
         Invite,
+        Match,
+        MatchPlayer,
       ],
       synchronize: this.configService.get<string>('NODE_ENV') === 'development',
       logging: this.configService.get<string>('NODE_ENV') === 'development',
     };
   }
 }
-

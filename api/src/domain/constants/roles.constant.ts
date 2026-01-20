@@ -1,7 +1,4 @@
-export enum RoleType {
-  ADMIN = 'admin',
-  MEMBER = 'member',
-}
+import { RoleType } from '../enums/role-type.enum';
 
 export const DEFAULT_ROLES = {
   [RoleType.ADMIN]: {

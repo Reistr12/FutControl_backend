@@ -3,6 +3,7 @@ import type { IOrganizationRepository } from '../../../domain/repositories/organ
 import { UpdateOrganizationDto } from '../../dtos/update-organization.dto';
 import { Organization } from '../../../domain/entities/organization.entity';
 import { OrganizationAccessService } from '../../services/organization-access.service';
+import { MemberRoleEnum } from '@domain/enums/member-role.enum';
 
 @Injectable()
 export class UpdateOrganizationUseCase {
@@ -13,9 +14,9 @@ export class UpdateOrganizationUseCase {
   ) {}
 
   async execute(id: string, updateDto: UpdateOrganizationDto, userId: string): Promise<Organization> {
-    const isMember = await this.organizationAccessService.verifyUserIsMember(userId, id);
-    if (!isMember) {
-      throw new ForbiddenException('Usuário não é membro desta organização');
+    const isAdmin = await this.organizationAccessService.verifyUserHasRole(userId, id, MemberRoleEnum.ADMIN);
+    if (!isAdmin) {
+      throw new ForbiddenException('Apenas administradores podem atualizar a organização');
     }
     
     const organization = await this.organizationRepository.findById(id);

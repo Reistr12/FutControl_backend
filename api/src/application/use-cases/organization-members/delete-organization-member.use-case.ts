@@ -2,6 +2,7 @@ import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import type { IOrganizationRepository } from '../../../domain/repositories/organization.repository.interface';
 import { OrganizationAccessService } from '../../services/organization-access.service';
 import { OrganizationRoleService } from '@application/services/organization-role.service';
+import { MemberRoleEnum } from '@domain/enums/member-role.enum';
 
 @Injectable()
 export class DeleteOrganizationMemberUseCase {
@@ -13,7 +14,7 @@ export class DeleteOrganizationMemberUseCase {
   ) {}
 
   async execute(userId: string, organizationId: string, currentUserId: string): Promise<void> {
-    await this.organizationAccessService.verifyUserHasRole(currentUserId, organizationId, 'admin');
+    await this.organizationAccessService.verifyUserHasRole(currentUserId, organizationId, MemberRoleEnum.ADMIN);
     
     const member = await this.organizationRepository.findMemberByUserIdAndOrganizationId(
       userId,

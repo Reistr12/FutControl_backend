@@ -1,8 +1,6 @@
 import { IsEnum, IsNotEmpty, IsString, IsUUID } from 'class-validator';
-export enum MemberRoleEnum {
-  ADMIN = 'admin',
-  MEMBER = 'member'
-}
+import { MemberRoleEnum } from '@domain/enums/member-role.enum';
+
 export class CreateOrganizationMemberDto {
   @IsUUID()
   userId: string;
@@ -12,9 +10,6 @@ export class CreateOrganizationMemberDto {
 
   @IsString()
   @IsNotEmpty()
-  @IsEnum({
-    MemberRoleEnum
-  })
+  @IsEnum(MemberRoleEnum)
   memberRole: MemberRoleEnum
 }
-

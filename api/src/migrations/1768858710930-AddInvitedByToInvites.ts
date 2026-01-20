@@ -1,6 +1,6 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class AddInvitedByToInvites1737141200000 implements MigrationInterface {
+export class AddInvitedByToInvites1768858710930 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`
             ALTER TABLE "invites" 

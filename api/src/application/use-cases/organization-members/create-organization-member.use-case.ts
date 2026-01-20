@@ -1,13 +1,14 @@
 import { Injectable, Inject, ConflictException, NotFoundException } from '@nestjs/common';
 import type { IOrganizationRepository } from '../../../domain/repositories/organization.repository.interface';
 import type { IUserRepository } from '../../../domain/repositories/user.repository.interface';
-import { CreateOrganizationMemberDto, MemberRoleEnum } from '../../dtos/create-organization-member.dto';
+import { CreateOrganizationMemberDto } from '../../dtos/create-organization-member.dto';
 import { OrganizationMember } from '../../../domain/entities/organization-member.entity';
 import { OrganizationAccessService } from '../../services/organization-access.service';
 import { OrganizationRoleService } from '@application/services/organization-role.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Role } from '@domain/entities/role.entity';
+import { MemberRoleEnum } from '@domain/enums/member-role.enum';
 
 @Injectable()
 export class CreateOrganizationMemberUseCase {

@@ -4,7 +4,7 @@ import { OrganizationAccessService } from '../../services/organization-access.se
 import { Repository } from 'typeorm';
 import { OrganizationRole } from '@domain/entities/organization-role.entity';
 import { OrganizationMember } from '@domain/entities/organization-member.entity';
-import { MemberRoleEnum } from '@application/dtos/create-organization-member.dto';
+import { MemberRoleEnum } from '@domain/enums/member-role.enum';
 
 @Injectable()
 export class DeleteOrganizationUseCase {

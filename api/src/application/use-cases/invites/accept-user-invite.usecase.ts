@@ -1,3 +1,4 @@
+import { MemberRoleEnum } from "@domain/enums/member-role.enum";
 import { OrganizationRoleService } from "@application/services/organization-role.service";
 import { Invite } from "@domain/entities/invite.entity";
 import type { IInviteRepository } from "@domain/repositories/invite.repository.interface";
@@ -36,7 +37,7 @@ export class AcceptUserInviteUseCase {
             userId: acceptedInvite.userId,
         });
 
-        const memberRole = await this.organizationRepository.findRoleByName('member');
+        const memberRole = await this.organizationRepository.findRoleByName(MemberRoleEnum.MEMBER);
         if (memberRole) {
             await this.organizationRoleService.createOrganizationRole(
                 member.id,
