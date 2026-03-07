@@ -4,7 +4,7 @@ import { TypeOrmOptionsFactory, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { User } from '../../domain/entities/user.entity';
 import { Role } from '../../domain/entities/role.entity';
 import { Organization } from '../../domain/entities/organization.entity';
-import { OrganizationRole } from '../../domain/entities/organization-role.entity';
+import { OrganizationMemberRole } from '../../domain/entities/organization-role.entity';
 import { OrganizationMember } from '../../domain/entities/organization-member.entity';
 import { Invite } from '../../domain/entities/invite.entity';
 import { Match } from '../../domain/entities/match.entity';
@@ -26,7 +26,7 @@ export class DatabaseConfig implements TypeOrmOptionsFactory {
         User,
         Role,
         Organization,
-        OrganizationRole,
+        OrganizationMemberRole,
         OrganizationMember,
         Invite,
         Match,

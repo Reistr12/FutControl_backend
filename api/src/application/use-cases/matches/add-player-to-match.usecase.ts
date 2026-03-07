@@ -1,6 +1,6 @@
 import { MemberRoleEnum } from "@domain/enums/member-role.enum";
 import { OrganizationAccessService } from "@application/services/organization-access.service";
-import { PaymentMethodEnum } from "@domain/enums/payment-method.enum";
+import { PlayerTypeEnum } from "@domain/enums/player-type.enum";
 import type { IMatchRepository } from "@domain/repositories/match.repository.interface";
 import { BadRequestException, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { CurrentUserData } from "@infrastructure/decorators/current-user.decorator";
@@ -17,13 +17,11 @@ export class AddPlayerToMatchUseCase {
         adminUser: CurrentUserData;
         matchId: string;
         userId?: string;
-        isGuest: boolean;
+        type: PlayerTypeEnum;
         guestName?: string;
-        guestEmail?: string;
-        hasPaid?: boolean;
-        paymentMethod?: PaymentMethodEnum;
     }) {
-        const { adminUser, matchId, userId, isGuest, guestName, guestEmail, hasPaid, paymentMethod } = params;
+        const { adminUser, matchId, userId, type, guestName } = params;
+        const isGuest = type === PlayerTypeEnum.GUEST;
 
         const match = await this.matchRepository.findById(matchId);
         if (!match) {
@@ -39,7 +37,7 @@ export class AddPlayerToMatchUseCase {
             throw new BadRequestException('Apenas administradores podem adicionar jogadores');
         }
 
-        let memberId: string | null = null;
+        let organizationMemberId: string | null = null;
 
         if (!isGuest) {
             if (!userId) {
@@ -49,21 +47,21 @@ export class AddPlayerToMatchUseCase {
             if (!member) {
                 throw new BadRequestException('Usuário não é membro desta organização');
             }
-            memberId = member.id;
+            organizationMemberId = member.id;
         } else {
-            if (!guestName || !guestEmail) {
-                throw new BadRequestException('Nome e email são obrigatórios para convidados');
+            if (!guestName) {
+                throw new BadRequestException('Nome é obrigatório para convidados');
             }
         }
 
         const players = await this.matchRepository.findPlayersByMatchId(matchId);
 
-        if (!isGuest && memberId) {
-            if (players.some(p => p.memberId === memberId)) {
+        if (!isGuest && organizationMemberId) {
+            if (players.some(p => p.organizationMemberId === organizationMemberId)) {
                 throw new BadRequestException('Este membro já está inscrito nesta partida');
             }
-        } else if (isGuest && guestEmail) {
-            if (players.some(p => p.isGuest && p.guestEmail === guestEmail)) {
+        } else if (isGuest && guestName) {
+            if (players.some(p => p.type === PlayerTypeEnum.GUEST && p.guestName === guestName)) {
                 throw new BadRequestException('Este convidado já está inscrito nesta partida');
             }
         }
@@ -73,7 +71,7 @@ export class AddPlayerToMatchUseCase {
         }
 
         if (isGuest && match.maxGuests) {
-            const currentGuests = players.filter(p => p.isGuest).length;
+            const currentGuests = players.filter(p => p.type === PlayerTypeEnum.GUEST).length;
             if (currentGuests >= match.maxGuests) {
                 throw new BadRequestException('A partida já atingiu o número máximo de convidados');
             }
@@ -81,12 +79,9 @@ export class AddPlayerToMatchUseCase {
 
         const player = await this.matchRepository.addPlayer({
             matchId,
-            memberId,
-            isGuest,
+            organizationMemberId,
+            type,
             guestName: isGuest ? guestName : null,
-            guestEmail: isGuest ? guestEmail : null,
-            hasPaid: hasPaid || false,
-            paymentMethod: paymentMethod || null,
         });
 
         return player;

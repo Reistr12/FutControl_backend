@@ -30,7 +30,7 @@ export class MatchRepository implements IMatchRepository {
   async findByOrganizationId(organizationId: string): Promise<Match[]> {
     return this.matchRepo.find({
       where: { organizationId },
-      order: { date: 'ASC', startTime: 'ASC' },
+      order: { schedule: 'ASC' },
     });
   }
 
@@ -53,8 +53,8 @@ export class MatchRepository implements IMatchRepository {
     return this.matchPlayerRepo.save(newPlayer);
   }
 
-  async removePlayer(matchId: string, memberId: string): Promise<void> {
-    await this.matchPlayerRepo.softDelete({ matchId, memberId });
+  async removePlayer(matchId: string, organizationMemberId: string): Promise<void> {
+    await this.matchPlayerRepo.softDelete({ matchId, organizationMemberId });
   }
 
   async findPlayersByMatchId(matchId: string): Promise<MatchPlayer[]> {
@@ -65,9 +65,9 @@ export class MatchRepository implements IMatchRepository {
     });
   }
 
-  async findPlayerByMatchAndMember(matchId: string, memberId: string): Promise<MatchPlayer | null> {
+  async findPlayerByMatchAndMember(matchId: string, organizationMemberId: string): Promise<MatchPlayer | null> {
     return this.matchPlayerRepo.findOne({
-      where: { matchId, memberId },
+      where: { matchId, organizationMemberId },
       relations: ['member'],
     });
   }

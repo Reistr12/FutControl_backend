@@ -47,11 +47,8 @@ export class MatchController {
         return await this.subscribeInMatchUseCase.execute({
             matchId,
             userId: user.id,
-            isGuest: data.isGuest,
+            type: data.type,
             guestName: data.guestName,
-            guestEmail: data.guestEmail,
-            hasPaid: data.hasPaid,
-            paymentMethod: data.paymentMethod,
         });
     }
 
@@ -65,11 +62,8 @@ export class MatchController {
             adminUser: user,
             matchId,
             userId: data.userId,
-            isGuest: data.isGuest,
+            type: data.type,
             guestName: data.guestName,
-            guestEmail: data.guestEmail,
-            hasPaid: data.hasPaid,
-            paymentMethod: data.paymentMethod,
         });
     }
 

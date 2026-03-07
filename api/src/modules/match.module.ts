@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Match } from '@domain/entities/match.entity';
 import { MatchPlayer } from '@domain/entities/match-player.entity';
 import { Organization } from '@domain/entities/organization.entity';
-import { OrganizationRole } from '@domain/entities/organization-role.entity';
+import { OrganizationMemberRole } from '@domain/entities/organization-role.entity';
 import { OrganizationMember } from '@domain/entities/organization-member.entity';
 import { User } from '@domain/entities/user.entity';
 import { Role } from '@domain/entities/role.entity';
@@ -20,7 +20,7 @@ import { OrganizationRoleService } from '@application/services/organization-role
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Match, MatchPlayer, Organization, OrganizationRole, OrganizationMember, User, Role]),
+    TypeOrmModule.forFeature([Match, MatchPlayer, Organization, OrganizationMemberRole, OrganizationMember, User, Role]),
   ],
   controllers: [
     MatchController,

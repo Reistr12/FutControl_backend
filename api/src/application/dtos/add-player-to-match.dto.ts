@@ -1,27 +1,15 @@
 import { IsBoolean, IsEmail, IsEnum, IsOptional, IsString, IsUUID, ValidateIf } from 'class-validator';
-import { PaymentMethodEnum } from '@domain/enums/payment-method.enum';
+import { PlayerTypeEnum } from '@domain/enums/player-type.enum';
 
 export class AddPlayerToMatchDto {
-  @ValidateIf((o) => !o.isGuest)
+  @ValidateIf((o) => o.type === PlayerTypeEnum.MEMBER)
   @IsString()
   userId?: string;
 
-  @IsBoolean()
-  isGuest: boolean;
+  @IsEnum(PlayerTypeEnum)
+  type: PlayerTypeEnum;
 
-  @ValidateIf((o) => o.isGuest)
+  @ValidateIf((o) => o.type === PlayerTypeEnum.GUEST)
   @IsString()
   guestName?: string;
-
-  @ValidateIf((o) => o.isGuest)
-  @IsEmail()
-  guestEmail?: string;
-
-  @IsOptional()
-  @IsBoolean()
-  hasPaid?: boolean;
-
-  @IsOptional()
-  @IsEnum(PaymentMethodEnum)
-  paymentMethod?: PaymentMethodEnum;
 }

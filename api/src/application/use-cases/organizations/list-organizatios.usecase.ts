@@ -21,7 +21,6 @@ export class ListOrganizationsUseCase {
         if(!userId) {
             throw new UnauthorizedException('Usuário não encontrado');
         }
-
         let allOrganizations = await this.organizationRepository.listOrganizations(isPublic);
 
         let organizationsWithUser: any[] = [];
@@ -31,7 +30,7 @@ export class ListOrganizationsUseCase {
                 if (member) {
                     organizationsWithUser.push({
                         ...organization,
-                        organizationRole: member.organizationRole,
+                        organizationRole: member,
                     });
                 }
             }));

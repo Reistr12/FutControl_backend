@@ -1,27 +1,11 @@
-import { IsBoolean, IsEmail, IsEnum, IsOptional, IsString } from 'class-validator';
-import { PaymentMethodEnum } from '@domain/enums/payment-method.enum';
+import { IsEnum, IsOptional, IsString } from 'class-validator';
+import { PlayerTypeEnum } from '@domain/enums/player-type.enum';
 
 export class SubscribeMatchDto {
-  @IsOptional()
-  @IsString()
-  memberId?: string;
-
-  @IsBoolean()
-  isGuest: boolean;
+  @IsEnum(PlayerTypeEnum)
+  type: PlayerTypeEnum;
 
   @IsOptional()
   @IsString()
   guestName?: string;
-
-  @IsOptional()
-  @IsEmail()
-  guestEmail?: string;
-
-  @IsOptional()
-  @IsBoolean()
-  hasPaid?: boolean;
-
-  @IsOptional()
-  @IsEnum(PaymentMethodEnum)
-  paymentMethod?: PaymentMethodEnum;
 }

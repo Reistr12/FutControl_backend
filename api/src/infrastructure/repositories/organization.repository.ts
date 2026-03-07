@@ -1,5 +1,5 @@
 import { Organization } from "@domain/entities/organization.entity";
-import { OrganizationRole } from "@domain/entities/organization-role.entity";
+import { OrganizationMemberRole } from "@domain/entities/organization-role.entity";
 import { OrganizationMember } from "@domain/entities/organization-member.entity";
 import { Role } from "@domain/entities/role.entity";
 import { IOrganizationRepository } from "@domain/repositories/organization.repository.interface";
@@ -12,8 +12,8 @@ export class OrganizationRepository implements IOrganizationRepository {
     constructor(
         @InjectRepository(Organization)
         private readonly organizationRepo: Repository<Organization>,
-        @InjectRepository(OrganizationRole)
-        private readonly roleRepo: Repository<OrganizationRole>,
+        @InjectRepository(OrganizationMemberRole)
+        private readonly roleRepo: Repository<OrganizationMemberRole>,
         @InjectRepository(OrganizationMember)
         private readonly memberRepo: Repository<OrganizationMember>,
         @InjectRepository(Role)
@@ -69,31 +69,35 @@ export class OrganizationRepository implements IOrganizationRepository {
     }
 
     // ------------------------------------------------OrganizationRole methods
-    async findRoleById(id: string): Promise<OrganizationRole | null> {
+    async findRoleById(id: string): Promise<OrganizationMemberRole | null> {
         return this.roleRepo.findOne({ where: { id } });
     }
 
-    async findRolesByOrganizationId(organizationId: string): Promise<OrganizationRole[]> {
-        return this.roleRepo.find({
-            where: { organizationId },
-        });
+    async findRolesByOrganizationId(organizationId: string): Promise<OrganizationMemberRole[]> {
+        const members = await this.memberRepo.find({ where: { organizationId } });
+        if (members.length === 0) return [];
+        
+        const memberIds = members.map(m => m.id);
+        return this.roleRepo.createQueryBuilder('role')
+            .where('role.organizationMemberId IN (:...memberIds)', { memberIds })
+            .getMany();
     }
 
-    async findRolesByUserIdAndOrganizationId(userId: string, organizationId: string): Promise<OrganizationRole[]> {
+    async findRolesByUserIdAndOrganizationId(userId: string, organizationId: string): Promise<OrganizationMemberRole[]> {
         const member = await this.memberRepo.findOne({ where: { userId, organizationId } });
         if (!member) return [];
         
         return this.roleRepo.find({
-            where: { memberId: member.id, organizationId },
+            where: { organizationMemberId: member.id },
         });
     }
 
-    async createRole(organizationRole: Partial<OrganizationRole>): Promise<OrganizationRole> {
-        const newOrganizationRole = this.roleRepo.create(organizationRole);
-        return this.roleRepo.save(newOrganizationRole);
+    async createRole(organizationRole: Partial<OrganizationMemberRole>): Promise<OrganizationMemberRole> {
+        const newOrganizationMemberRole = this.roleRepo.create(organizationRole);
+        return this.roleRepo.save(newOrganizationMemberRole);
     }
 
-    async saveRole(organizationRole: OrganizationRole): Promise<OrganizationRole> {
+    async saveRole(organizationRole: OrganizationMemberRole): Promise<OrganizationMemberRole> {
         return this.roleRepo.save(organizationRole);
     }
 
@@ -101,7 +105,7 @@ export class OrganizationRepository implements IOrganizationRepository {
         await this.roleRepo.softDelete(id);
     }
 
-    async findRoleByName(name: string): Promise<OrganizationRole | null> {
+    async findRoleByName(name: string): Promise<OrganizationMemberRole | null> {
         const role = await this.baseRoleRepo.findOne({ where: { name } });
         if (!role) return null;
         
@@ -122,15 +126,13 @@ export class OrganizationRepository implements IOrganizationRepository {
     ): Promise<OrganizationMember | null> {
         return this.memberRepo.findOne({
             where: { userId, organizationId },
-            relations: ['organizationRole', 'organizationRole.role'],
+            relations: ['user', 'organization'],
         });
     }
 
     async findMembersByOrganizationId(organizationId: string, search?: string): Promise<OrganizationMember[]> {
         const qb = this.memberRepo.createQueryBuilder('member')
             .leftJoinAndSelect('member.user', 'user')
-            .leftJoinAndSelect('member.organizationRole', 'organizationRole')
-            .leftJoinAndSelect('organizationRole.role', 'role')
             .where('member.organizationId = :organizationId', { organizationId })
             .andWhere('member.deletedAt IS NULL');
 
@@ -138,24 +140,7 @@ export class OrganizationRepository implements IOrganizationRepository {
             qb.andWhere('(user.name ILIKE :search OR user.email ILIKE :search)', { search: `%${search}%` });
         }
 
-        const members = await qb.getMany();
-        
-        // Se não há role definido, assumir como 'member' por padrão
-        return members.map(member => {
-            if (!member.organizationRole) {
-                member.organizationRole = {
-                    id: '',
-                    memberId: member.id,
-                    roleId: '',
-                    organizationId: member.organizationId,
-                    role: { id: '', name: 'member' },
-                    createdAt: new Date(),
-                    updatedAt: new Date(),
-                    deletedAt: null
-                } as any;
-            }
-            return member;
-        });
+        return await qb.getMany();
     }
 
     async findMembersByUserId(userId: string): Promise<OrganizationMember[]> {

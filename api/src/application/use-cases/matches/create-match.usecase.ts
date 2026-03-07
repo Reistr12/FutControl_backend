@@ -22,24 +22,15 @@ export class CreateMatchUseCase {
         }
 
         const now = new Date();
-        const matchDate = new Date(data.date);
-        const registrationDate = new Date(data.registrationOpenDate);
+        const scheduleDate = new Date(data.schedule);
+        const startDate = new Date(data.startAt);
+        const endDate = new Date(data.endAt);
 
-        const drawDate = new Date(matchDate);
-
-        if (registrationDate < now) {
-            throw new BadRequestException('A data de abertura de inscrições deve ser uma data futura');
-        }
-
-        if (registrationDate < drawDate) {
-            throw new BadRequestException('A data de abertura de inscrições deve ser anterior ao horário do sorteio (30 min antes da partida)');
-        }
-
-        if (matchDate < now) {
+        if (scheduleDate < now) {
             throw new BadRequestException('A data da partida deve ser uma data futura');
         }
 
-        if (data.startTime >= data.endTime) {
+        if (startDate >= endDate) {
             throw new BadRequestException('O horário de início deve ser anterior ao horário de término');
         }
 
@@ -51,13 +42,12 @@ export class CreateMatchUseCase {
         const match = await this.matchRepository.create({
             organizationId,
             maxPlayers: data.maxPlayers,
-            date: data.date,
-            startTime: data.startTime,
-            endTime: data.endTime,
+            schedule: data.schedule,
+            startAt: data.startAt,
+            endAt: data.endAt,
             maxGuests: data.maxGuests,
             maxTeams: data.maxTeams,
             playersPerTeam: data.playersPerTeam,
-            registrationOpenDate: data.registrationOpenDate,
             price: data.price,
         });
 

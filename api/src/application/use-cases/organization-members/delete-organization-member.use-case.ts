@@ -25,17 +25,7 @@ export class DeleteOrganizationMemberUseCase {
       throw new NotFoundException('Membro não encontrado nesta organização');
     }
 
-    const memberOrganizationRole = await this.organizationRoleService.deleteOrganizationRole(
-      member.id,
-      organizationId,
-      member.organizationRole.roleId
-    );
-
-    if (memberOrganizationRole !== null) {
-      return await this.organizationRepository.deleteMemberByUserAndOrganization(userId, organizationId);
-    } else {
-      throw new NotFoundException('Role do membro não encontrada nesta organização');
-    }
+    await this.organizationRepository.deleteMemberByUserAndOrganization(userId, organizationId);
   }
 }
 

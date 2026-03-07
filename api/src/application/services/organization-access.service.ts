@@ -3,7 +3,7 @@ import type { IOrganizationRepository } from '../../domain/repositories/organiza
 import { OrganizationMember } from '@domain/entities/organization-member.entity';
 import { Repository } from 'typeorm';
 import { Role } from '@domain/entities/role.entity';
-import { OrganizationRole } from '@domain/entities/organization-role.entity';
+import { OrganizationMemberRole } from '@domain/entities/organization-role.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
@@ -13,8 +13,8 @@ export class OrganizationAccessService {
     private readonly organizationRepository: IOrganizationRepository,
     @InjectRepository(Role)
     private readonly roleRepository: Repository<Role>,
-    @InjectRepository(OrganizationRole)
-    private readonly organizationRoleRepository: Repository<OrganizationRole>,
+    @InjectRepository(OrganizationMemberRole)
+    private readonly organizationRoleRepository: Repository<OrganizationMemberRole>,
   ) {}
 
   async verifyUserIsMember(userId: string, organizationId: string): Promise<OrganizationMember | false> {
@@ -58,9 +58,8 @@ export class OrganizationAccessService {
 
     const organizationRole = await this.organizationRoleRepository.findOne({
       where: {
-        memberId: isMember.id,
+        organizationMemberId: isMember.id,
         roleId: role.id,
-        organizationId,
       },
     });
 

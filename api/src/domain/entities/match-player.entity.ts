@@ -10,51 +10,48 @@ import {
 } from 'typeorm';
 import { Match } from './match.entity';
 import { OrganizationMember } from './organization-member.entity';
-import { PaymentMethodEnum } from '../enums/payment-method.enum';
+import { PlayerTypeEnum } from '../enums/player-type.enum';
 
 @Entity('match_players')
 export class MatchPlayer {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ name: 'match_id' })
   matchId: string;
 
   @ManyToOne(() => Match)
-  @JoinColumn({ name: 'matchId' })
+  @JoinColumn({ name: 'match_id' })
   match: Match;
 
-  @Column({ type: 'uuid', nullable: true })
-  memberId: string | null;
+  @Column({ type: 'uuid', nullable: true, name: 'organization_member_id' })
+  organizationMemberId: string | null;
 
   @ManyToOne(() => OrganizationMember)
-  @JoinColumn({ name: 'memberId' })
-  member: OrganizationMember;
+  @JoinColumn({ name: 'organization_member_id' })
+  organizationMember: OrganizationMember;
 
-  @Column({ type: 'int', nullable: true })
-  teamNumber: number | null;
+  @Column({ type: 'enum', enum: PlayerTypeEnum })
+  type: PlayerTypeEnum;
 
-  @Column({ default: false })
-  isGuest: boolean;
-
-  @Column({ type: 'varchar', nullable: true })
+  @Column({ type: 'varchar', nullable: true, name: 'guest_name' })
   guestName: string | null;
 
-  @Column({ type: 'varchar', nullable: true })
-  guestEmail: string | null;
-
-  @Column({ default: false })
-  hasPaid: boolean;
-
-  @Column({ type: 'varchar', nullable: true })
-  paymentMethod: PaymentMethodEnum | null;
-
-  @CreateDateColumn()
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  @DeleteDateColumn()
+  @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt: Date;
+
+  @Column({ type: 'uuid', nullable: true, name: 'created_by' })
+  createdBy: string;
+
+  @Column({ type: 'uuid', nullable: true, name: 'updated_by' })
+  updatedBy: string;
+
+  @Column({ type: 'uuid', nullable: true, name: 'deleted_by' })
+  deletedBy: string;
 }

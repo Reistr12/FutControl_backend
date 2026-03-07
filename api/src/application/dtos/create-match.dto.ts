@@ -8,15 +8,15 @@ export class CreateMatchDto {
 
     @IsDateString({ strict: true })
     @IsNotEmpty()
-    date: Date;
+    schedule: Date;
 
-    @IsString()
+    @IsDateString({ strict: true })
     @IsNotEmpty()
-    startTime: string;
+    startAt: Date;
 
-    @IsString()
+    @IsDateString({ strict: true })
     @IsNotEmpty()
-    endTime: string;
+    endAt: Date;
 
     @IsNumber()
     @IsOptional()
@@ -32,10 +32,6 @@ export class CreateMatchDto {
     @IsNotEmpty()
     @Min(1)
     playersPerTeam: number;
-
-    @IsDateString({ strict: true })
-    @IsNotEmpty()
-    registrationOpenDate: Date;
 
     @IsNumber()
     @IsOptional()

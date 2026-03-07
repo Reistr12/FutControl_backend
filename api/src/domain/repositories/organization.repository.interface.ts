@@ -1,5 +1,5 @@
 import { Organization } from '../entities/organization.entity';
-import { OrganizationRole } from '../entities/organization-role.entity';
+import { OrganizationMemberRole } from '../entities/organization-role.entity';
 import { OrganizationMember } from '../entities/organization-member.entity';
 
 export interface IOrganizationRepository {
@@ -12,13 +12,13 @@ export interface IOrganizationRepository {
   delete(id: string): Promise<void>;
 
   // OrganizationRole methods
-  findRoleById(id: string): Promise<OrganizationRole | null>;
-  findRolesByOrganizationId(organizationId: string): Promise<OrganizationRole[]>;
-  findRolesByUserIdAndOrganizationId(userId: string, organizationId: string): Promise<OrganizationRole[]>;
-  createRole(organizationRole: Partial<OrganizationRole>): Promise<OrganizationRole>;
-  saveRole(organizationRole: OrganizationRole): Promise<OrganizationRole>;
+  findRoleById(id: string): Promise<OrganizationMemberRole | null>;
+  findRolesByOrganizationId(organizationId: string): Promise<OrganizationMemberRole[]>;
+  findRolesByUserIdAndOrganizationId(userId: string, organizationId: string): Promise<OrganizationMemberRole[]>;
+  createRole(organizationRole: Partial<OrganizationMemberRole>): Promise<OrganizationMemberRole>;
+  saveRole(organizationRole: OrganizationMemberRole): Promise<OrganizationMemberRole>;
   deleteRole(id: string): Promise<void>;
-  findRoleByName(name: string): Promise<OrganizationRole | null>;
+  findRoleByName(name: string): Promise<OrganizationMemberRole | null>;
 
   // OrganizationMember methods
   findMemberById(id: string): Promise<OrganizationMember | null>;

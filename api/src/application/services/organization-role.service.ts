@@ -1,5 +1,5 @@
 import { OrganizationMember } from "@domain/entities/organization-member.entity";
-import { OrganizationRole } from "@domain/entities/organization-role.entity";
+import { OrganizationMemberRole } from "@domain/entities/organization-role.entity";
 import { Organization } from "@domain/entities/organization.entity";
 import { Role } from "@domain/entities/role.entity";
 import { BadRequestException, Injectable } from "@nestjs/common";
@@ -9,8 +9,8 @@ import { Repository, Transaction } from "typeorm";
 @Injectable()
 export class OrganizationRoleService {
     constructor(
-        @InjectRepository(OrganizationRole)
-        private readonly organizationRoleRepository: Repository<OrganizationRole>,
+        @InjectRepository(OrganizationMemberRole)
+        private readonly organizationRoleRepository: Repository<OrganizationMemberRole>,
         @InjectRepository(Role)
         private readonly roleRepository: Repository<Role>,
         @InjectRepository(Organization)
@@ -18,7 +18,7 @@ export class OrganizationRoleService {
         @InjectRepository(OrganizationMember)
         private readonly organizationMemberRepository: Repository<OrganizationMember>,
     ) {}
-    async createOrganizationRole(idMember: string, idOrganization: string, idRole: string): Promise<OrganizationRole> {
+    async createOrganizationRole(idMember: string, idOrganization: string, idRole: string): Promise<OrganizationMemberRole> {
         const role = await this.roleRepository.createQueryBuilder('role')
           .where('role.id = :idRole', { idRole })
           .getOne();
@@ -44,16 +44,15 @@ export class OrganizationRoleService {
             throw new BadRequestException('O membro especificado não existe ou não pertence à organização.');
         }
         
-        const organizationRole = new OrganizationRole();
-        organizationRole.memberId = idMember;
-        organizationRole.organizationId = idOrganization;
+        const organizationRole = new OrganizationMemberRole();
+        organizationRole.organizationMemberId = idMember;
         organizationRole.roleId = idRole;
         
         await this.organizationRoleRepository.save(organizationRole);
         return organizationRole;
     }
 
-    async updateOrganizationRole(idMember: string, idOrganization: string, idRole: string, newIdRole: string): Promise<OrganizationRole> {
+    async updateOrganizationRole(idMember: string, idOrganization: string, idRole: string, newIdRole: string): Promise<OrganizationMemberRole> {
         const organizationRole = await this.organizationRoleRepository.createQueryBuilder('organizationRole')
           .where('organizationRole.memberId = :idMember', { idMember })
           .andWhere('organizationRole.organizationId = :idOrganization', { idOrganization })

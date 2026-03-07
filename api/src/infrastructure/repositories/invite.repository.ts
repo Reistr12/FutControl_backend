@@ -1,6 +1,6 @@
 import { Invite } from "@domain/entities/invite.entity";
 import { OrganizationMember } from "@domain/entities/organization-member.entity";
-import { OrganizationRole } from "@domain/entities/organization-role.entity";
+import { OrganizationMemberRole } from "@domain/entities/organization-role.entity";
 import { IInviteRepository } from "@domain/repositories/invite.repository.interface";
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";

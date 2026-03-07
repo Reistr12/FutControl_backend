@@ -2,7 +2,7 @@ import { Injectable, Inject, NotFoundException, ForbiddenException } from '@nest
 import type { IOrganizationRepository } from '../../../domain/repositories/organization.repository.interface';
 import { OrganizationAccessService } from '../../services/organization-access.service';
 import { Repository } from 'typeorm';
-import { OrganizationRole } from '@domain/entities/organization-role.entity';
+import { OrganizationMemberRole } from '@domain/entities/organization-role.entity';
 import { OrganizationMember } from '@domain/entities/organization-member.entity';
 import { MemberRoleEnum } from '@domain/enums/member-role.enum';
 
@@ -12,7 +12,7 @@ export class DeleteOrganizationUseCase {
     @Inject('IOrganizationRepository')
     private readonly organizationRepository: IOrganizationRepository,
     private readonly organizationAccessService: OrganizationAccessService,
-    private readonly organizationRole: Repository<OrganizationRole>,
+    private readonly organizationRole: Repository<OrganizationMemberRole>,
     private readonly organizationMembers: Repository<OrganizationMember>,
   ) {}
 
@@ -28,7 +28,7 @@ export class DeleteOrganizationUseCase {
       throw new ForbiddenException('Usuário não tem permissão para deletar esta organização');
     }
 
-    const organizationRoles = await this.organizationRole.find({ where: { organizationId: id } });
+    const organizationRoles = await this.organizationRole.find({ where: { organizationMemberId: id } });
 
     for (const organizationRole of organizationRoles) {
       await this.organizationRole.softDelete(organizationRole.id);

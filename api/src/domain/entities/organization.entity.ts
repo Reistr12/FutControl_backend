@@ -15,28 +15,37 @@ export class Organization {
   @Column()
   name: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'text', nullable: true })
   description: string;
 
   @Column({ nullable: true })
   location: string;
 
-  @Column({ default: true })
+  @Column({ default: true, name: 'is_active' })
   isActive: boolean;
 
-  @Column({ nullable: true })
-  maxMembers: number;
-
-  @Column({ default: false })
+  @Column({ default: false, name: 'is_public' })
   isPublic: boolean;
 
-  @CreateDateColumn()
+  @Column({ nullable: true, name: 'max_members' })
+  maxMembers: number;
+
+  @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 
-  @UpdateDateColumn()
+  @UpdateDateColumn({ name: 'updated_at' })
   updatedAt: Date;
 
-  @DeleteDateColumn()
+  @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt: Date;
+
+  @Column({ type: 'uuid', nullable: true, name: 'created_by' })
+  createdBy: string;
+
+  @Column({ type: 'uuid', nullable: true, name: 'updated_by' })
+  updatedBy: string;
+
+  @Column({ type: 'uuid', nullable: true, name: 'deleted_by' })
+  deletedBy: string;
 }
 

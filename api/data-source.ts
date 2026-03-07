@@ -3,7 +3,7 @@ import { config } from 'dotenv';
 import { User } from './src/domain/entities/user.entity';
 import { Role } from './src/domain/entities/role.entity';
 import { Organization } from './src/domain/entities/organization.entity';
-import { OrganizationRole } from './src/domain/entities/organization-role.entity';
+import { OrganizationMemberRole } from './src/domain/entities/organization-role.entity';
 import { OrganizationMember } from './src/domain/entities/organization-member.entity';
 
 config();
@@ -19,7 +19,7 @@ export default new DataSource({
     User,
     Role,
     Organization,
-    OrganizationRole,
+    OrganizationMemberRole,
     OrganizationMember,
   ],
   migrations: ['src/migrations/*.ts'],

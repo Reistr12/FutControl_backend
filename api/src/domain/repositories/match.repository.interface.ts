@@ -11,8 +11,8 @@ export interface IMatchRepository {
 
   // MatchPlayer operations
   addPlayer(matchPlayer: Partial<MatchPlayer>): Promise<MatchPlayer>;
-  removePlayer(matchId: string, memberId: string): Promise<void>;
+  removePlayer(matchId: string, organizationMemberId: string): Promise<void>;
   findPlayersByMatchId(matchId: string): Promise<MatchPlayer[]>;
-  findPlayerByMatchAndMember(matchId: string, memberId: string): Promise<MatchPlayer | null>;
+  findPlayerByMatchAndMember(matchId: string, organizationMemberId: string): Promise<MatchPlayer | null>;
   countPlayersByMatchId(matchId: string): Promise<number>;
 }

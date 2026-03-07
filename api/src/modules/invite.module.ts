@@ -10,7 +10,7 @@ import { AcceptInviteUseCase } from "@application/use-cases/invites/accept-invit
 import { ListUserInvitesUseCase } from "@application/use-cases/invites/list-user-invites.usecase";
 import { AcceptUserInviteUseCase } from "@application/use-cases/invites/accept-user-invite.usecase";
 import { Organization } from "@domain/entities/organization.entity";
-import { OrganizationRole } from "@domain/entities/organization-role.entity";
+import { OrganizationMemberRole } from "@domain/entities/organization-role.entity";
 import { OrganizationMember } from "@domain/entities/organization-member.entity";
 import { Invite } from "@domain/entities/invite.entity";
 import { Role } from "@domain/entities/role.entity";
@@ -20,7 +20,7 @@ import { OrganizationRoleService } from "@application/services/organization-role
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([Organization, OrganizationRole, OrganizationMember, Invite, Role, User])
+        TypeOrmModule.forFeature([Organization, OrganizationMemberRole, OrganizationMember, Invite, Role, User])
     ],
     controllers: [
         InviteController

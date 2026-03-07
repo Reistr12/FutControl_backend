@@ -1,7 +1,7 @@
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Module } from '@nestjs/common';
 import { Organization } from '@domain/entities/organization.entity';
-import { OrganizationRole } from '@domain/entities/organization-role.entity';
+import { OrganizationMemberRole } from '@domain/entities/organization-role.entity';
 import { OrganizationMember } from '@domain/entities/organization-member.entity';
 import { User } from '@domain/entities/user.entity';
 import { Role } from '@domain/entities/role.entity';
@@ -24,7 +24,7 @@ import { Repository } from 'typeorm';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Organization, OrganizationRole, OrganizationMember, User, Role]),
+    TypeOrmModule.forFeature([Organization, OrganizationMemberRole, OrganizationMember, User, Role]),
   ],
   controllers: [
     OrganizationController,

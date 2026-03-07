@@ -1,6 +1,6 @@
 import { Injectable, Inject, UnauthorizedException, BadRequestException } from '@nestjs/common';
 import type { IOrganizationRepository } from '../../../domain/repositories/organization.repository.interface';
-import { OrganizationRole } from '../../../domain/entities/organization-role.entity';
+import { OrganizationMemberRole } from '../../../domain/entities/organization-role.entity';
 import { OrganizationAccessService } from '../../services/organization-access.service';
 
 @Injectable()
@@ -11,7 +11,7 @@ export class GetUserRolesInOrganizationUseCase {
     private readonly organizationAccessService: OrganizationAccessService,
   ) {}
 
-  async execute(userId: string, organizationId: string, currentUserId: string): Promise<OrganizationRole[]> {
+  async execute(userId: string, organizationId: string, currentUserId: string): Promise<OrganizationMemberRole[]> {
     // Validação de parâmetros
     if (!currentUserId) {
       throw new UnauthorizedException('Usuário não autenticado');
